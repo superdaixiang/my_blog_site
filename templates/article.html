@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ a.title }}</title>
+    <style>
+        .main{
+            width:800px;
+            border: dimgrey 1px solid;
+            margin-top: 30px;
+            margin-left: 200px;
+        }
+
+
+    </style>
+</head>
+<body style="background-color: #eeeeee">
+    <div class="main">
+            <h2 style="text-align: center; margin-bottom: 50px">
+                {{ a.title }}
+            </h2>
+
+            <div>
+                 {{ a.articledetail__content }}
+            </div>
+
+        <p style="font-size: 12px; margin-top: 30px;">
+            <a href="/blog_view/{{ a.author_id }}">
+                {{ a.author__nic_name }}
+            </a>发布于:
+            <span>
+                {{ a.c_time }}
+            </span>&nbsp;
+            阅读数:{{ a.read_count }}
+
+        </p>
+        <p></p>
+    </div>
+</body>
+</html>

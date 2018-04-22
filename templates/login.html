@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <style>
+        .main{
+            position: fixed;
+            width: 400px;
+            height: 280px;
+            margin-top: 174px;
+            margin-left: 494px;
+            border: #555555 1px solid;
+            background-color: white;
+        }
+        .label{
+            display: block;
+            font-size: 12px;
+            margin: 0;
+        }
+        .block{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .head{
+
+                font-weight: bold;
+                font-size: 16px;
+                padding-bottom: 15px;
+                margin: 0;
+                color: #904;
+                padding-top: 0;
+        }
+    </style>
+</head>
+<body style="background-color: #eeeeee">
+    <div class="main">
+    <div class="head" style="margin-left: 120px">登录您的个人空间</div>
+    <form action="/center" method="post">
+        {% csrf_token %}
+        <div class="block">
+            <p class="label">{{ login_obj.username.label }}</p>{{ login_obj.username }}{{ login_obj.errors.username.0 }}
+        </div>
+        <div class="block">
+            <p class="label">{{ login_obj.password.label }}</p>{{ login_obj.password }}{{ login_obj.errors.password.0 }}
+        </div>
+        <div class="block">
+            <p class="label">验证码</p>
+            {{ login_obj.verify }}{{ login_obj.errors.verify.0 }}{{ mess }}<img src="/check_code" alt="验证码"
+                                                                                  onclick="change_code(this);">
+        </div>
+        <span > {%  if login_obj.non_field_errors %}
+                    {% for item in login_obj.non_field_errors %}
+                    <span >
+                        {{ item }}
+                    </span>
+                {% endfor %}
+                {% endif %}
+            </span>
+        <input type="submit" value="登录">
+   </form>
+    <a href="/register">注册</a>
+    </div>
+    <script>
+        function change_code(ths) {
+            ths.src = ths.src + '?'
+        }
+    </script>
+</body>
+</html>

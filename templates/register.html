@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <style>
+        .main{
+            position: fixed;
+            width: 400px;
+            height: 300px;
+            margin-top: 174px;
+            margin-left: 494px;
+            border: #555555 1px solid;
+            background-color: white;
+        }
+        .label{
+            display: block;
+            font-size: 12px;
+            margin: 0;
+        }
+        .block{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .head{
+
+                font-weight: bold;
+                font-size: 16px;
+                padding-bottom: 15px;
+                margin: 0;
+                color: #904;
+                padding-top: 0;
+        }
+    </style>
+</head>
+<body style="background-color: #eeeeee">
+    <div class="main">
+    <div class="head" style="margin-left: 120px">注册您的账号</div>
+    <form action="/register" method="post">
+        {% csrf_token %}
+        <div class="block">
+            <div class="label">{{ obj.username.label }}</div>{{ obj.username }} {{ obj.errors.username.0 }}
+        </div>
+        <div class="block">
+            <div class="label">{{ obj.password.label }}</div>{{ obj.password }} {{ obj.errors.password.0 }}
+        </div>
+        <div class="block">
+             <div class="label">{{ obj.password_again.label }}</div>{{ obj.password_again }}{{ obj.errors.password_again.0 }}
+        </div>
+        <div class="block">
+            <div class="label">{{ obj.verify.label }}</div>
+            <span > {%  if obj.non_field_errors %}
+                    {% for item in obj.non_field_errors %}
+                    <span >
+                        {{ item }}
+                    </span>
+                    {% endfor %}
+                    {% endif %}
+            </span>
+            {{ obj.verify }} {{ mess }}<img src="/check_code" alt="验证码" onclick="cg_code(this);">
+        </div>
+
+
+        <p>
+            <input type="submit" value="提交" />
+            <a href="/login">前往登陆</a>
+        </p>
+    </form>
+
+
+    </div>
+
+    <script>
+        function cg_code(ths) {
+            ths.src = ths.src + '?' ;
+        }
+    </script>
+</body>
+<script type="text/javascript" src="/static/jquery-3.3.1.min.js"></script>
+</html>

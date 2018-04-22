@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ v.0.blog__nic_name }}</title>
+    <style>
+        .hide{
+            display: none;
+        }
+        .shade{
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            opacity: 0.6;
+            background-color: black;
+        }
+        .add_model{
+            position: fixed;
+            top: 100px;
+            height: 350px;
+            width: 400px;
+            left: 50%;
+            border: brown;
+            background: white;
+            margin-left:-200px;
+
+        }
+        .delete_model{
+            position: fixed;
+            top: 100px;
+            height: 100px;
+            width: 200px;
+            left: 50%;
+            border: brown;
+            background: white;
+            margin-left:-200px;
+        }
+        .nav_menu{
+            margin: 8px 7px 0 10px;
+            padding: 0;
+            height: 30px;
+            line-height: 30px;
+            background-color: #2b6695;
+        }
+        .nav_menu a,span{
+                font-size: 14px;
+                padding-left: 24px;
+                color: #eeeeee;
+        }
+        .post_list{
+                width: 800px;
+                margin-top: 50px;
+                padding-left: 100px;
+                padding-right: 0;
+                padding-top: 10px;
+                min-height: 300px;
+        }
+        .post_item{
+            border-bottom: 1px dotted #ccc;
+            margin-bottom: 60px;
+            padding-bottom: 15px;
+
+        }
+        .title_link{
+            color: #105cb6;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+{#***********************************************************************************#}
+<body>
+    <div class="nav_menu">
+        <span>
+            {% if v.0.blog__nic_name %}
+            {{ v.0.blog__nic_name }}的个人空间
+            {% else %}
+            <a href="/setting?bid={{ v.0.blog__bid }}">您还没有昵称,点我设置!</a>
+            {% endif %}
+        </span>
+
+        <a href="/" style="margin-left: 1000px"><input type="button" value="网站首页"></a>
+        <a href="/logout"><input type="button" value="注销"></a>
+        <input type='button' value="写博客" style="margin-left: 50px">
+    </div>
+
+    <div class="hide" id="blog_id"> {{ v.0.blog__bid }}</div>
+{#    隐藏的博客id标签，方便后面添加文章的时候找到对应的博客编号#}
+
+<div class="post_list">
+    {% if v.0.blog__article__title %}
+            {% for i in v %}
+              <div class="post_item">
+                <div class="hide" >{{ i.blog__article__aid }}</div>
+                <div class="title_link">
+                    <a target="_blank" href="/article/{{ i.blog__article__aid }}">
+                        {{ i.blog__article__title}}
+                    </a>
+                </div>
+                <div style="font-size: 12px; margin-top: 20px">{{ i.blog__article__read_count }}{{ i.blog__article__c_time }} </div>
+                <div>
+                    <span><input type='button' value="删除"></span>&nbsp
+                    <span><input type='button' value="编辑"></span>
+                </div>
+              </div>
+            {% endfor %}
+
+
+    {% else %}
+        <p> 您还没有发表文章!</p>
+    {% endif %}
+</div>
+{#**********************************************************************************#}
+
+    <div class="shade hide" id="shade_layer"> </div>
+
+
+
+    <div id="delete_article" class="hide delete_model">
+        <p style="text-align: center"> 确定删除吗?</p>
+        <input id="delete_1" type="button" value="确定" style="margin-left: 50px">
+        <input id="cancel_1" type="button" value="取消">
+    </div>
+
+
+    <div id="add_article" class="add_model hide">
+        <form id="edit_from">
+            <p>
+            <input type="text" name="title" placeholder="文章标题">
+            <div>
+                <textarea name="content" id="add_cont" cols="30" rows="10" placeholder="输入文章内容"></textarea>
+            </div>
+            <input id="submit_new" type="button" value="提交">
+            <input id="cancel_2" type="button" value="取消">
+        </form>
+    </div>
+{#**********************************************************************************#}
+
+    <script src="/static/jquery-3.3.1.min.js"> </script>
+    <script src="/static/jquery.cookie.js"> </script>
+    <script>
+        $(function () {
+
+        $('[value="写博客"]').click(function () {
+            $('#shade_layer').removeClass('hide');
+            $('#add_article').removeClass('hide');
+            var bid = $('#blog_id').text();
+             $('#submit_new').click(function () {
+                $.ajax({
+                    url:'/add',
+                    type:'POST',
+                    data: $('#edit_from').serialize() + '&' +　$.param({'bid': bid}),
+                    headers:{'X-CSRFtoken': $.cookie('csrftoken')},
+                    success:function (data) {
+                        var obj = JSON.parse(data);
+                        if(obj.status){location.reload()}else{
+                            alert(obj.error_mess);
+                        }
+
+                    }
+                })
+        });
+            $('#cancel_2').click(function () {
+                $('#shade_layer').addClass('hide');
+                $('#add_article').addClass('hide');
+            });
+
+        });
+
+
+
+        $('[value="删除"]').click(function () {
+            $('#delete_article').removeClass('hide');
+            $('#shade_layer').removeClass('hide');
+            var aid = $(this).parent().parent().parent().children().first().text();
+             $('#cancel_1').click(function () {
+                $('#shade_layer').addClass('hide');
+                $('#delete_article').addClass('hide');
+            });
+             $('#delete_1').click(function () {
+                $.ajax({
+                    url:'/delete',
+                    type:'POST',
+                    data:{'aid': aid},
+                    headers:{'X-CSRFtoken': $.cookie('csrftoken')},
+                    success:function (data) {
+                        location.reload();
+                    }
+                });
+             })
+        });
+
+
+        $('[value="编辑"]').click(function () {
+            $('#shade_layer').removeClass('hide');
+            $('#add_article').removeClass('hide');
+            var aid = $(this).parent().parent().parent().children().first().text();
+            var title = $(this).parent().parent().parent().children().eq(1).children().text();
+            $('[name="title"]').val(title);
+
+            $.ajax({
+                url:'/edit',
+                type:'GET',
+                data:{'aid': aid},
+                success:function (data) {
+                   $('[name="content"]').text(data)
+                    }
+                });
+
+
+            $('#submit_new').click(function () {
+                $.ajax({
+                    url:'/edit',
+                    type:'POST',
+                    data:$('#edit_from').serialize() + '&' + $.param({'aid': aid}),
+                    headers:{'X-CSRFtoken': $.cookie('csrftoken')},
+                    success:function (data) {
+                        var obj=JSON.parse(data);
+                        if(obj.status){location.reload()}
+                        else{alert(obj.error_mess)}
+
+                        }
+                    })
+                 });
+
+        $('#cancel_2').click(function () {
+            $('#shade_layer').addClass('hide');
+            $('#add_article').addClass('hide');
+            $('[name="content"]').text('');
+            $('[name="title"]').val('');
+            {#编辑取消后要清楚编辑框中的文本#}
+            });
+
+        });
+        })
+
+
+    </script>
+</body>
+</html>

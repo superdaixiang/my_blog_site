@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博文首页</title>
+    <style>
+        .cur_page{
+            background-color: #2e6ab1;
+            border: 1px solid navy;
+            color: #fff;
+            font-weight: bold;
+            margin: 0 2px;
+            padding: 2px 5px;
+        }
+        .not_cur_page{
+            border: 1px solid navy;
+            color: #2e6ab1;
+            font-weight: bold;
+            margin: 0 2px;
+            padding: 2px 5px;
+        }
+        .nav_menu{
+            margin: 8px 7px 0 10px;
+            padding: 0;
+            height: 30px;
+            line-height: 30px;
+            background-color: #2b6695;
+        }
+        .nav_menu a{
+                font-size: 14px;
+                padding-left: 24px;
+                color: #eeeeee;
+        }
+        .post_list{
+                width: 800px;
+                margin-top: 0;
+                padding-left: 100px;
+                padding-right: 0;
+                padding-top: 10px;
+                min-height: 300px;
+        }
+        .post_item{
+            border-bottom: 1px dotted #ccc;
+            margin-bottom: 60px;
+            padding-bottom: 15px;
+
+        }
+        .title_link{
+            color: #105cb6;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .summery{
+                line-height: 1.8em;
+                margin-bottom: 5px;
+                color: #333;
+                overflow: hidden;
+                padding-right: 5px;
+                font-size: 12px;
+                padding-top: 5px;
+        }
+        .foot{
+                color: #555;
+                padding-top: 5px;
+                margin-left: 10px;
+        }
+        .pager{
+                font-size: 12px;
+                margin: 25px 0;
+                text-align: center;
+                color: #2e6ab1;
+                line-height: 200%;
+                overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div class="nav_menu">
+    <a href="/login" style="margin-left: 100px">登录</a>
+    <a href="/register">注册</a>
+    <a href="/center" style="margin-left: 800px">已登录进入个人中心</a>
+</div>
+
+<div class="post_list">
+
+    {% for i in a_info  %}
+        <div class="post_item">
+           <h3>
+               <a class="title_link" target="_blank" href="/article/{{ i.aid }}">
+                   {{ i.title }}
+               </a>
+           </h3>
+
+            <div class="summery">{{ i.articledetail__content|truncatechars:'100'}}</div>
+            <div class="foot">
+                <a href="/blog_view/{{ i.author_id }}">
+                    {{ i.author__nic_name }}
+                </a>
+                发布于
+                <span>{{ i.c_time|date:'Y-H-N' }}</span>
+                <span style="margin-left: 20px">阅读:{{ i.read_count }}</span>
+            </div>
+
+        </div>
+    {% endfor %}
+</div>
+<div class="pager">
+    {{ page_str|safe }}
+</div>
+
+
+</body>
+</html>
